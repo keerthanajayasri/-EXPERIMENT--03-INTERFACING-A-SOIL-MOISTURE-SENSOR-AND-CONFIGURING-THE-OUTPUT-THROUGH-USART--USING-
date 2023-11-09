@@ -74,53 +74,45 @@ configure in the usart 2 as asynchronous mode and set the baud rate as 115200 as
 ```
 #include "main.h"
 #include "stdio.h"
-#include "stdbool.h"
-#include "Soil Moisture Sensor.h"
-long int adc_val;
-ADC_HandleTypeDef hadc;
-UART_HandleTypeDef huart2;
+#if defined (__ICCARM__) || defined (__ARMCC_VERSION)
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#elif defined(__GNUC__)
+
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#endif /* __ICCARM__ || __ARMCC_VERSION */
+
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_ADC_Init(void);
 static void MX_USART2_UART_Init(void);
-#if defined(__ICCARM__) || defined (__ARMCC__VERSION)
-#define PUTCHAR_PROTOYPE int fputc(int ch,FILE *f)
-#elif defined(__GNUC__)
-#define PUTCHAR_PROTOTYPE int __io__putchar(int ch)
-#endif
-PUTCHAR_PROTOTYPE
-{
-	HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, 0xFFFF);
-	return ch;
-}
 
 int main(void)
 {
- 
   HAL_Init();
   SystemClock_Config();
   MX_GPIO_Init();
-  MX_ADC_Init();
   MX_USART2_UART_Init();
- 
+
   while (1)
   {
-    HAL_ADC_Start(&hadc);
-    HAL_ADC_PollForConversion(&hadc,100);
-    adc_val=HAL_ADC_GetValue(&hadc);
-    HAL_ADC_Stop(&hadc);
-    HAL_Delay(500);
-    printf("ADC RAW VALUE = %ld\n",adc_val);
-    HAL_Delay(500);
+	  printf("KEERTHANAJAYASRI\n");
+	  HAL_Delay(500);
 
   }
-  
+ 
+}
+PUTCHAR_PROTOTYPE
+{
+
+  HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, 0xFFFF);
+
+  return ch;
 }
 
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+
 
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
 
@@ -133,7 +125,6 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-
   
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK3|RCC_CLOCKTYPE_HCLK
                               |RCC_CLOCKTYPE_SYSCLK|RCC_CLOCKTYPE_PCLK1
@@ -150,37 +141,8 @@ void SystemClock_Config(void)
   }
 }
 
-static void MX_ADC_Init(void)
-{
-  hadc.Instance = ADC;
-  hadc.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV1;
-  hadc.Init.Resolution = ADC_RESOLUTION_10B;
-  hadc.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc.Init.ScanConvMode = ADC_SCAN_DISABLE;
-  hadc.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
-  hadc.Init.LowPowerAutoWait = DISABLE;
-  hadc.Init.LowPowerAutoPowerOff = DISABLE;
-  hadc.Init.ContinuousConvMode = ENABLE;
-  hadc.Init.NbrOfConversion = 1;
-  hadc.Init.DiscontinuousConvMode = DISABLE;
-  hadc.Init.ExternalTrigConv = ADC_SOFTWARE_START;
-  hadc.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-  hadc.Init.DMAContinuousRequests = DISABLE;
-  hadc.Init.Overrun = ADC_OVR_DATA_PRESERVED;
-  hadc.Init.SamplingTimeCommon1 = ADC_SAMPLETIME_1CYCLE_5;
-  hadc.Init.SamplingTimeCommon2 = ADC_SAMPLETIME_1CYCLE_5;
-  hadc.Init.OversamplingMode = DISABLE;
-  hadc.Init.TriggerFrequencyMode = ADC_TRIGGER_FREQ_HIGH;
-  if (HAL_ADC_Init(&hadc) != HAL_OK)
-  {
-    Error_Handler();
-  }
- 
-}
-
 static void MX_USART2_UART_Init(void)
 {
-
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
@@ -208,42 +170,42 @@ static void MX_USART2_UART_Init(void)
   {
     Error_Handler();
   }
+ 
 
 }
-]
+
+
 static void MX_GPIO_Init(void)
 {
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  __HAL_RCC_GPIOB_CLK_ENABLE();
+
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
-  GPIO_InitStruct.Pin = GPIO_PIN_0;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
 }
+
 void Error_Handler(void)
 {
+
   __disable_irq();
   while (1)
   {
   }
+
 }
+
 #ifdef  USE_FULL_ASSERT
 void assert_failed(uint8_t *file, uint32_t line)
-{}
-#endif
+{
+
+}
+#endif 
+
+
+ 
+
 ```
 
 ## Output screen shots of Serial port utility   :
- ![image](https://github.com/keerthanajayasri/-EXPERIMENT--03-INTERFACING-A-SOIL-MOISTURE-SENSOR-AND-CONFIGURING-THE-OUTPUT-THROUGH-USART--USING-/assets/121163440/38ad0978-ac93-4bff-812a-e4730290a071)
-
- ![image](https://github.com/keerthanajayasri/-EXPERIMENT--03-INTERFACING-A-SOIL-MOISTURE-SENSOR-AND-CONFIGURING-THE-OUTPUT-THROUGH-USART--USING-/assets/121163440/e3bf3057-a543-4193-9b40-11edfe7449bc)
-
- ![image](https://github.com/keerthanajayasri/-EXPERIMENT--03-INTERFACING-A-SOIL-MOISTURE-SENSOR-AND-CONFIGURING-THE-OUTPUT-THROUGH-USART--USING-/assets/121163440/0c34cbf1-4179-4aa2-9129-15948c19a1cd)
-
-![image](https://github.com/keerthanajayasri/-EXPERIMENT--03-INTERFACING-A-SOIL-MOISTURE-SENSOR-AND-CONFIGURING-THE-OUTPUT-THROUGH-USART--USING-/assets/121163440/683313c1-e07b-46ff-a60b-3a9d1f979a32)
+ ![WhatsApp Image 2023-11-09 at 11 32 40_62f82833](https://github.com/keerthanajayasri/-EXPERIMENT--03-INTERFACING-A-SOIL-MOISTURE-SENSOR-AND-CONFIGURING-THE-OUTPUT-THROUGH-USART--USING-/assets/121163440/82b93514-5c44-4fc7-ab32-746f37cdf1e7)
 
  
 ## Result :
